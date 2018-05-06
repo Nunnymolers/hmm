@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>form</title>
+	</head>
+	<body>
+		<div>
+			<label>Username</label>
+			<br>
+			<input type='text' name='userName'>
+			<label> >:O or >:)</label>
+			<br>
+			<input type='radio' name='not' answer='yes'><label>>:O</label>
+			<br>
+			<input type='radio' name='not' answer='no'><label>>:)</label>
+		</div>
+		<div>
+			<label> >:? </label>
+			<br>
+			<input type="checkbox" name="shocked"><label> highlighter </label>
+			<br>
+			<input type="checkbox" name="angrymeh"><label> hilighter </label>
+			<br>
+			<input type="checkbox" name="shouty"><label> highliter </label>
+			<br>
+			<div>
+				<label>Password</label>
+				<input type='password' name='password'>
+			</div>
+			<div>
+				<label>Verify Password</label>
+				<input type='password' name='verifyPassword'>
+			</div>
+			<button>SUBMIT</button>
+		</div>
+		<script>
+			var $inputs = document.querySelectorAll('input');
+			var $button = document.querySelector('button');
+
+			function verifyPassword() {
+
+				var $passwords = document.querySelectorAll('input[type="password"]');
+				var isSamePassword = $passwords[0].value === $passwords[1].value;
+				if(!isSamePassword) {
+					alert("Please enter the same password!")
+				}
+				return isSamePassword;
+
+			}
+
+			function storeData(){
+				var data = {}
+				for(var i = 0; i < $inputs.length; i++) {
+						var $input = $inputs[i];
+						if($input.type === 'text' || $input.type === 'password') {
+							data[$input.name] =  $input.value;
+						} else if($input.type === 'checkbox') {
+							data[$input.name] =  $input.checked;
+						} else if ($input.type === 'radio' && $input.checked) {
+							data[$input.name] = $input.getAttribute('answer');
+						}
+					}
+				sendData(data);
+			}
+
+			function sendData(data){
+
+				if(!verifyPassword()){
+					return;
+				}
+				var req = new XMLHttpRequest();
+				req.open('POST', '/form', true);
+				req.setRequestHeader('content-type', 'application/json');
+				function readyStateChange() {
+					if(req.readyState !== 4) return;
+					if(req.status !== 200) return;
+
+					data = JSON.parse(req.responseText);
+					if(data.error) {
+						alert(data.error);
+					}
+				}
+				req.onreadystatechange = readyStateChange;
+				req.send(JSON.stringify(data));
+			}
+
+			$button.addEventListener('click', storeData);
+		</script>
+	</body>
+</html>

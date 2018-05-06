@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    <link href="https://fonts.googleapis.com/css?family=Cutive+Mono|Oxygen+Mono" rel="stylesheet">
+		<title>GAME</title>
+    <style>
+      *{
+        margin:0;
+        padding:0;
+      }
+      body {
+				overflow: hidden;
+        font-family: 'Oxygen Mono', monospace;
+        color:white;
+			}
+			canvas {
+				background: url('https://images.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2FG5uYe1h.jpg&f=1') no-repeat center center fixed;
+				background-size: 100vw 100vh;
+			}
+
+			#chat{
+				position:fixed;
+				top:1vw;
+				left:1vw;
+			}
+
+			#chat input {
+				position:absolute;
+				margin: 0 40vw;
+				bottom:1.5vh;
+				width:20vw;
+				font-size:1.5vmax;
+				padding:0.5vmax;
+				color:white;
+				background-color:transparent;
+        border: none;
+        border-bottom: solid 3px white;
+			}
+
+      #chat input:focus{
+        outline:none !important;
+      }
+
+			#logout{
+				position:absolute;
+				top:1em;
+				right: 1em;
+			}
+<<<<<<< HEAD
+			a:visited, a{
+				color:white;
+			}
+=======
+>>>>>>> 11162f33ecc895ce8b805fca6d2b55df5f893aab
+    </style>
+	</head>
+	<body>
+    <canvas></canvas>
+    <div id='chat'>
+			<ul></ul>
+			<div>
+				<input type='text'>
+			</div>
+		</div>
+		<div id='logout'>
+			<a href='/logout'>Log Out</a>
+		</div>
+    <script src='/js/socket.io.js'></script>
+		<script>
+			var user = '{{USER}}';
+      var socket = io();
+			//stuff that doesn't work --> authentication w/ password, and game :/
+
+			var $canvas = document.querySelector('canvas');
+			$canvas.width = window.screen.width;
+			$canvas.height = window.screen.height;
+
+			var $input = document.querySelector('input');
+			document.body.addEventListener('keypress', sendMessage);
+
+			function sendMessage(e){
+				if(e.key !== 'Enter') return;
+				if(document.activeElement.tagName !== 'INPUT') return;
+				if($input.value === '') return;
+				socket.emit('message', {message: $input.value, user:user});
+				$input.value = '';
+			}
+			socket.on('newMessage', (message) => {
+				var $ul = document.querySelector('#chat ul');
+				var $li = document.createElement('li');
+				$li.innerHTML = `<strong>${message.user}:</strong>${message.message}`;
+				$ul.appendChild($li);
+			});
+		</script>
+	</body>
+</html>
